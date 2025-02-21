@@ -1,18 +1,27 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { AuthService } from '@/services/authService';
-import { LoginUserInput } from '@/interfaces/auth.interface';
+import {NextApiRequest, NextApiResponse} from 'next';
+import {AuthService} from '@/services/authService';
+import {LoginRequestBody, LoginSchema} from "@/dtos/auth.dtos";
+import {formatZodErrors} from "@/utils/zod.error.validator";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: "Method not allowed" });
+        return res.status(405).json({error: "Method not allowed"});
     }
 
     try {
-        const credentials: LoginUserInput = req.body;
-        const { status, data } = await AuthService.login(credentials);
+        // Validate Request Body Using `zod`
+        const validation = LoginSchema.safeParse(req.body)
+        if (!validation.success) {
+            return res.status(400).json({error: formatZodErrors(validation.error)});
+        }
+
+        //Extract Validated data
+        const credentials: LoginRequestBody = validation.data
+
+        const {status, data} = await AuthService.login(credentials);
         return res.status(status).json(data);
     } catch (error) {
         console.error("Login Error:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({error: "Internal Server Error"});
     }
 }
