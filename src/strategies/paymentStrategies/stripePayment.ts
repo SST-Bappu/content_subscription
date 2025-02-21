@@ -4,7 +4,7 @@ import {PaymentGatewayStrategy} from "@/strategies/interfaces/paymentGateway.str
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export class StripePayment implements PaymentGatewayStrategy {
-    async pay(amount: number, paymentInfo: {payment_method: string, [key: string]: string}): Promise<{ success: boolean; response?:object; error?: string }> {
+    async pay(amount: number, paymentInfo: {paymentMethod: string, [key: string]: string}): Promise<{ success: boolean; response?:object; error?: string }> {
         try {
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: Math.round(amount * 100), // Convert to cents
@@ -13,7 +13,7 @@ export class StripePayment implements PaymentGatewayStrategy {
                     enabled: true,
                     allow_redirects: "never"
                 },
-                payment_method: paymentInfo.payment_method,
+                payment_method: paymentInfo.paymentMethod,
                 confirm: true,
             });
 

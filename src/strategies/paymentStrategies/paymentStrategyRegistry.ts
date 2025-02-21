@@ -4,9 +4,9 @@ import {StripePayment} from "@/strategies/paymentStrategies/stripePayment";
 export class PaymentStrategyRegistry {
     private paymentStrategies: Record<string, PaymentGatewayStrategy>;
 
-    constructor() {
+    constructor(stripePaymentStrategy: StripePayment) {
         this.paymentStrategies = {
-            stripe: new StripePayment(),
+            stripe: stripePaymentStrategy,
             // paypal: new PayPalPayment(),
         };
     }

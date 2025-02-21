@@ -4,10 +4,10 @@ import {SubscriptionEmailBuilder, WelcomeEmailBuilder} from "@/strategies/emailB
 export class EmailBuilderRegister {
     private emailBuilderStrategies: Record<string, EmailBuilder>;
 
-    constructor() {
+    constructor(welcomeEmailBuilder: WelcomeEmailBuilder, subscriptionEmailBuilder: SubscriptionEmailBuilder) {
         this.emailBuilderStrategies = {
-            welcome: new WelcomeEmailBuilder(),
-            subscription: new SubscriptionEmailBuilder()
+            welcome: welcomeEmailBuilder,
+            subscription: subscriptionEmailBuilder
         };
     }
 

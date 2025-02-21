@@ -4,10 +4,10 @@ import {SMTPEmail} from "@/strategies/emailStrategy/SMTPEmail";
 export class EmailStrategyRegister {
     private emailStrategies: Record<string, EmailStrategy>
 
-    constructor() {
-        this.emailStrategies = {
-            stripe: new SMTPEmail()
-        };
+    constructor(smtpStrategy: SMTPEmail) {
+        this.emailStrategies ={
+            smtp: smtpStrategy
+        }
     }
 
     /**

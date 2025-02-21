@@ -7,6 +7,9 @@ import {AuthService} from "@/services/authService";
 import {EmailService} from "@/services/emailService";
 import {SubscriptionService} from "@/services/subscriptionService";
 import {PaymentService} from "@/services/paymentService";
+import {SMTPEmail} from "@/strategies/emailStrategy/SMTPEmail";
+import {StripePayment} from "@/strategies/paymentStrategies/stripePayment";
+import {SubscriptionEmailBuilder, WelcomeEmailBuilder} from "@/strategies/emailBuilderStrategy/emailBuilder";
 // We keep a centralized container as the project size is small
 // with limited services. We may upgrade to modularized containers for bigger projects
 
@@ -16,10 +19,20 @@ import {PaymentService} from "@/services/paymentService";
 const userRepository = new UserRepository()
 const categoryRepository = new CategoryRepository()
 
-//strategies
-const paymentStrategyRegistry = new PaymentStrategyRegistry()
-const emailStrategyRegistry = new EmailStrategyRegister()
-const emailBuilderRegistry = new EmailBuilderRegister()
+//email strategies
+const smtpStrategy = new SMTPEmail()
+
+//payment strategies
+const stripePaymentStrategy = new StripePayment()
+
+//email builder strategies
+const welcomeEmailBuilder = new WelcomeEmailBuilder()
+const subscriptionEmailBuilder = new SubscriptionEmailBuilder()
+
+//strategy registries
+const paymentStrategyRegistry = new PaymentStrategyRegistry(stripePaymentStrategy)
+const emailStrategyRegistry = new EmailStrategyRegister(smtpStrategy)
+const emailBuilderRegistry = new EmailBuilderRegister(welcomeEmailBuilder, subscriptionEmailBuilder)
 
 //services
 const emailService = new EmailService(emailStrategyRegistry, emailBuilderRegistry)
