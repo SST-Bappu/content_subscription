@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {AuthService} from '@/services/authService';
 import {RegisterRequestBody, RegisterSchema} from "@/dtos/auth.dtos";
 import {formatZodErrors} from "@/utils/zod.error.validator";
+import {authService} from "@/services/containers";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         // Extract Validated Data
         const userData: RegisterRequestBody = validation.data
-        const {status, data} = await AuthService.register(userData);
+        const {status, data} = await authService.register(userData);
         return res.status(status).json(data);
     } catch (error) {
         console.error("Registration Error:", error);

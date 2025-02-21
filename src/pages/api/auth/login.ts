@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {AuthService} from '@/services/authService';
 import {LoginRequestBody, LoginSchema} from "@/dtos/auth.dtos";
 import {formatZodErrors} from "@/utils/zod.error.validator";
+import {authService} from "@/services/containers";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         //Extract Validated data
         const credentials: LoginRequestBody = validation.data
 
-        const {status, data} = await AuthService.login(credentials);
+        const {status, data} = await authService.login(credentials);
         return res.status(status).json(data);
     } catch (error) {
         console.error("Login Error:", error);
