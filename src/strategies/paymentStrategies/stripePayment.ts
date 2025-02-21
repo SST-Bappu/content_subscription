@@ -11,6 +11,7 @@ export class StripePayment implements PaymentGatewayStrategy {
                 currency: 'usd',
                 automatic_payment_methods: {
                     enabled: true,
+                    allow_redirects: "never"
                 },
                 payment_method: paymentInfo.payment_method,
                 confirm: true,
