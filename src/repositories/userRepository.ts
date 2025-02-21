@@ -53,4 +53,46 @@ export class UserRepository {
             where: {id},
         });
     }
+
+    /**
+     * Check if the user is already subscribed to a category.
+     * @param userId - The user's ID.
+     * @param categoryId - The category ID.
+     * @returns `true` if subscribed, `false` otherwise.
+     */
+    static async isUserSubscribedToCategory(userId: string, categoryId: string): Promise<boolean> {
+        const user = await prisma.user.findUnique({
+            where: {id: userId},
+            select: {categories: {where: {id: categoryId}}},
+        });
+
+        return !!user?.categories.length;
+    }
+
+    /**
+     * Subscribe a user to a category.
+     * @param userId - The user's ID.
+     * @param categoryId - The category ID.
+     */
+    static async subscribeUserToCategory(userId: string, categoryId: string): Promise<void> {
+        // Check if the user is already subscribed
+        const existingSubscription = await prisma.user.findUnique({
+            where: {id: userId},
+            select: {categories: {where: {id: categoryId}}}
+        });
+
+        if (existingSubscription?.categories.length) {
+            throw new Error("User is already subscribed to this category.");
+        }
+
+        // Subscribe the user
+        await prisma.user.update({
+            where: {id: userId},
+            data: {
+                categories: {
+                    connect: {id: categoryId} // Connect user to the category
+                }
+            }
+        });
+    }
 }
