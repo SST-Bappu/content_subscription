@@ -1,3 +1,5 @@
+import {NextApiRequest} from "next";
+
 export interface RegisterUserInput {
     name: string;
     email: string;
@@ -12,4 +14,9 @@ export interface LoginUserInput {
 export interface AuthResponse {
     status: number;
     data: object;
+}
+
+
+export interface AuthenticatedRequest extends NextApiRequest{
+    user?: {userId: string}
 }
