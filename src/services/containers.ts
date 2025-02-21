@@ -23,9 +23,12 @@ const emailBuilderRegistry = new EmailBuilderRegister()
 
 //services
 const emailService = new EmailService(emailStrategyRegistry, emailBuilderRegistry)
-const paymentService = new PaymentService()
+const paymentService = new PaymentService(paymentStrategyRegistry)
 
 //services in exports
 const authService = new AuthService(userRepository, emailService)
-const subscriptionService = new SubscriptionService(categoryRepository, userRepository, pay)
+const subscriptionService = new SubscriptionService(categoryRepository, userRepository, paymentService, emailService)
+
+
+export {authService, subscriptionService}
 
