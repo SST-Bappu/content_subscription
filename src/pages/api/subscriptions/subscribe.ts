@@ -1,10 +1,10 @@
 import {NextApiResponse} from 'next';
-import {SubscriptionService} from '@/services/subscriptionService';
 import {authenticate} from '@/middleware/authMiddleware';
 
 import {AuthenticatedRequest} from "@/interfaces/auth.interface";
 import {SubscriptionRequestBody, SubscriptionSchema} from "@/dtos/subscription.dtos";
 import {formatZodErrors} from "@/utils/zod.error.validator";
+import {subscriptionService} from "@/services/containers";
 
 export default async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -21,7 +21,7 @@ export default async function handler(req: AuthenticatedRequest, res: NextApiRes
             }
 
             // Extract Validated Data
-            const {categoryId, paymentInfo, paymentMethod}: SubscriptionRequestBody = validation.data;
+            const {categoryId, paymentInfo, paymentGateway}: SubscriptionRequestBody = validation.data;
             const userId = req.user?.userId;
 
             if (!userId) {
@@ -29,7 +29,7 @@ export default async function handler(req: AuthenticatedRequest, res: NextApiRes
             }
 
             // Process Subscription
-            const {status, data} = await SubscriptionService.subscribe(userId, categoryId, paymentInfo, paymentMethod);
+            const {status, data} = await subscriptionService.subscribe(userId, categoryId, paymentInfo, paymentGateway);
             return res.status(status).json(data);
         });
     } catch (error: unknown) {
