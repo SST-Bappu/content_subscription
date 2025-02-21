@@ -27,4 +27,15 @@ model Category {
   name  String   @unique
   price Decimal
   users User[]
+  contents  Content[] // One-to-Many: A category can have multiple contents
+}
+
+model Content {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  categoryId  String   // Foreign key
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
