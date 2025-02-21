@@ -2,28 +2,42 @@ import { UserRepository } from '@/repositories/userRepository';
 import { hashPassword, comparePassword } from '@/utils/bcrypt';
 import { generateJWT } from '@/utils/jwt';
 import { RegisterUserInput, LoginUserInput, AuthResponse } from '@/interfaces/auth.interface';
+import {EmailService} from "@/services/emailService";
 
 export class AuthService {
-    static async register(userData: RegisterUserInput): Promise<AuthResponse> {
+    constructor(
+        private userRepo: UserRepository,
+        private emailService: EmailService
+    ) {}
+    async register(userData: RegisterUserInput): Promise<AuthResponse> {
         const { name, email, password } = userData;
 
-        const existingUser = await UserRepository.getUserByEmail(email);
+        const existingUser = await this.userRepo.getUserByEmail(email);
         if (existingUser) {
             return { status: 409, data: { error: "User already exists" } };
         }
 
         const hashedPassword = await hashPassword(password);
-        const newUser = await UserRepository.createUser({ name, email, password: hashedPassword });
+        const newUser = await this.userRepo.createUser({ name, email, password: hashedPassword });
 
         const token = generateJWT({ userId: newUser.id });
+
+        // Send welcome email to the user
+
+        const emailData = {
+            email: newUser!.email,
+            name: newUser!.name,
+        }
+        await this.emailService.sendEmail(emailData, 'welcome')
+
 
         return { status: 201, data: { message: "User registered successfully", token } };
     }
 
-    static async login(credentials: LoginUserInput): Promise<AuthResponse> {
+    async login(credentials: LoginUserInput): Promise<AuthResponse> {
         const { email, password } = credentials;
 
-        const user = await UserRepository.getUserByEmail(email);
+        const user = await this.userRepo.getUserByEmail(email);
         if (!user) {
             return { status: 401, data: { error: "Invalid credentials" } };
         }
