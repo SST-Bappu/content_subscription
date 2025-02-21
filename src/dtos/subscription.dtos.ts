@@ -6,7 +6,7 @@ import { z } from 'zod';
 export const SubscriptionSchema = z.object({
     categoryId: z.string().min(1, { message: "categoryId is required" }),
     paymentInfo: z.object({
-        payment_method: z.string().min(1, { message: "payment_method is required" }),
+        paymentMethod: z.string().min(1, { message: "payment_method is required" }),
     }),
     paymentGateway: z.string().min(1, { message: "paymentMethod is required" }),
 });
