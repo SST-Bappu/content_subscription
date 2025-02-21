@@ -12,7 +12,8 @@ export class SubscriptionService {
         private emailService: EmailService
     ) {
     }
-    async subscribe(userId: string, categoryId: string, paymentInfo: object, paymentMethod: string): Promise<{
+
+    async subscribe(userId: string, categoryId: string, paymentInfo: object, paymentGateway: string): Promise<{
         status: number;
         data: object
     }> {
@@ -32,7 +33,7 @@ export class SubscriptionService {
         const amount = Decimal(category.price).toNumber();
 
         // Process the payment using the strategy pattern
-        const paymentResult = await this.paymentService.pay(amount, paymentInfo);
+        const paymentResult = await this.paymentService.pay(amount, paymentInfo, paymentGateway);
 
         if (!paymentResult.success) {
             return {status: 400, data: {error: "Payment failed", details: paymentResult.error}};

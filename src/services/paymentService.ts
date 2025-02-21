@@ -1,18 +1,18 @@
-import {PaymentGatewayStrategy} from "@/strategies/interfaces/paymentGateway.strategy";
-import {getPaymentStrategy} from "@/strategies/paymentStrategies/paymentStrategyRegistry";
+import {PaymentStrategyRegistry} from "@/strategies/paymentStrategies/paymentStrategyRegistry";
 
 export class PaymentService {
-    private paymentGateway: PaymentGatewayStrategy;
 
-    constructor(paymentMethod: string) {
-        this.paymentGateway = getPaymentStrategy(paymentMethod);
+    constructor(private paymentStrategyRegister: PaymentStrategyRegistry) {
     }
 
 
     /**
      * Processes payment using the selected payment gateway.
      */
-    async pay(amount: number, paymentInfo: object): Promise<{ success: boolean; error?: string }> {
-        return await this.paymentGateway.pay(amount, paymentInfo);
+    async pay(amount: number, paymentInfo: object, paymentGateway: string): Promise<{
+        success: boolean;
+        error?: string
+    }> {
+        return await this.paymentStrategyRegister.getPaymentStrategy(paymentGateway).pay(amount, paymentInfo);
     }
 }
