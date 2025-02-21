@@ -8,7 +8,7 @@ export const SubscriptionSchema = z.object({
     paymentInfo: z.object({
         payment_method: z.string().min(1, { message: "payment_method is required" }),
     }),
-    paymentMethod: z.string().min(1, { message: "paymentMethod is required" }),
+    paymentGateway: z.string().min(1, { message: "paymentMethod is required" }),
 });
 
 /**
