@@ -8,7 +8,7 @@ export class UserRepository {
      * @param email - The user's email.
      * @returns The user object or null if not found.
      */
-    static async getUserByEmail(email: string): Promise<User | null> {
+    async getUserByEmail(email: string): Promise<User | null> {
         return prisma.user.findUnique({where: {email}});
     }
 
@@ -17,7 +17,7 @@ export class UserRepository {
      * @param data - Object containing user details (name, email, password).
      * @returns The newly created user.
      */
-    static async createUser(data: { name: string; email: string; password: string }): Promise<User> {
+    async createUser(data: { name: string; email: string; password: string }): Promise<User> {
         return prisma.user.create({data});
     }
 
@@ -26,7 +26,7 @@ export class UserRepository {
      * @param id - The user's unique ID.
      * @returns The user object or null if not found.
      */
-    static async getUserById(id: string): Promise<User | null> {
+    async getUserById(id: string): Promise<User | null> {
         return prisma.user.findUnique({where: {id}});
     }
 
@@ -36,7 +36,7 @@ export class UserRepository {
      * @param data - Fields to update.
      * @returns The updated user object.
      */
-    static async updateUser(id: string, data: Partial<User>): Promise<User | null> {
+    async updateUser(id: string, data: Partial<User>): Promise<User | null> {
         return prisma.user.update({
             where: {id},
             data,
@@ -48,7 +48,7 @@ export class UserRepository {
      * @param id - The user's ID.
      * @returns The deleted user object.
      */
-    static async deleteUser(id: string): Promise<User | null> {
+    async deleteUser(id: string): Promise<User | null> {
         return prisma.user.delete({
             where: {id},
         });
@@ -60,7 +60,7 @@ export class UserRepository {
      * @param categoryId - The category ID.
      * @returns `true` if subscribed, `false` otherwise.
      */
-    static async isUserSubscribedToCategory(userId: string, categoryId: string): Promise<boolean> {
+    async isUserSubscribedToCategory(userId: string, categoryId: string): Promise<boolean> {
         const user = await prisma.user.findUnique({
             where: {id: userId},
             select: {categories: {where: {id: categoryId}}},
@@ -74,7 +74,7 @@ export class UserRepository {
      * @param userId - The user's ID.
      * @param categoryId - The category ID.
      */
-    static async subscribeUserToCategory(userId: string, categoryId: string): Promise<void> {
+    async subscribeUserToCategory(userId: string, categoryId: string): Promise<void> {
         // Check if the user is already subscribed
         const existingSubscription = await prisma.user.findUnique({
             where: {id: userId},
