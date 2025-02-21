@@ -1,16 +1,23 @@
 import {PaymentGatewayStrategy} from "@/strategies/interfaces/paymentGateway.strategy";
 import {StripePayment} from "@/strategies/paymentStrategies/stripePayment";
 
+export class PaymentStrategyRegistry {
+    private paymentStrategies: Record<string, PaymentGatewayStrategy>;
 
-const paymentStrategies: Record<string, PaymentGatewayStrategy> = {
-    stripe: new StripePayment(),
-    // paypal: new PayPalPayment(),
-};
+    constructor() {
+        this.paymentStrategies = {
+            stripe: new StripePayment(),
+            // paypal: new PayPalPayment(),
+        };
+    }
 
-/**
- * Returns the appropriate payment strategy.
- * @param method - The payment method (e.g., "stripe", "paypal").
- */
-export function getPaymentStrategy(method: string): PaymentGatewayStrategy {
-    return paymentStrategies[method.toLowerCase()] || new StripePayment(); // Default to Stripe
+    /**
+     * Returns the appropriate payment strategy.
+     * @param method - The payment method (e.g., "stripe", "paypal").
+     */
+    getPaymentStrategy(method: string): PaymentGatewayStrategy {
+        const defaultPayment = process.env.DEFAULT_PAYMENT_GATEWAY as string
+        return this.paymentStrategies[method.toLowerCase()] || this.paymentStrategies[defaultPayment]; // Default to Stripe
+    }
 }
+
