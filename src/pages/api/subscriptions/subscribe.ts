@@ -12,26 +12,25 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         throw {status: 405, message: "Method not allowed"};
     }
 
-    authenticate(req, res, async () => {
-        // Validate Request Body Using `zod`
-        const validation = SubscriptionSchema.safeParse(req.body);
+    // Validate Request Body Using `zod`
+    const validation = SubscriptionSchema.safeParse(req.body);
 
-        if (!validation.success) {
-            throw {status:400, message: formatZodErrors(validation.error)};
-        }
+    if (!validation.success) {
+        throw {status: 400, message: formatZodErrors(validation.error)};
+    }
 
-        // Extract Validated Data
-        const {categoryId, paymentInfo, paymentGateway}: SubscriptionRequestBody = validation.data;
-        const userId = req.user?.userId;
+    // Extract Validated Data
+    const {categoryId, paymentInfo, paymentGateway}: SubscriptionRequestBody = validation.data;
+    const userId = req.user?.userId;
 
-        if (!userId) {
-            throw {status: 405, message: "Unauthorized: User not found"};
-        }
+    if (!userId) {
+        throw {status: 401, message: "Unauthorized: User not found"};
+    }
+    // Process Subscription
+    const {status, data} = await subscriptionService.subscribe(userId, categoryId, paymentInfo, paymentGateway);
+    return res.status(status).json(data);
 
-        // Process Subscription
-        const {status, data} = await subscriptionService.subscribe(userId, categoryId, paymentInfo, paymentGateway);
-        return res.status(status).json(data);
-    });
 
 }
-export default errorHandler(handler)
+
+export default errorHandler(authenticate(handler))

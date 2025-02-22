@@ -5,7 +5,7 @@ import {Decimal} from "@prisma/client/runtime/binary";
 import {EmailService} from "@/services/emailService";
 import {Category} from "@prisma/client";
 import {ContentRepository} from "@/repositories/contentRepository";
-import {string} from "zod";
+
 
 export class SubscriptionService {
     constructor(
@@ -24,13 +24,13 @@ export class SubscriptionService {
         // Check if category exists
         const category = await this.categoryRepo.getCategoryById(categoryId);
         if (!category) {
-            return {status: 404, data: {error: "Category not found"}};
+            throw {status: 404, message: "Category not found"};
         }
 
         // Check if user is already subscribed
         const isAlreadySubscribed = await this.userRepo.isUserSubscribedToCategory(userId, categoryId);
         if (isAlreadySubscribed) {
-            return {status: 400, data: {error: "You are already subscribed to this category."}};
+            throw {status: 400, message: "You are already subscribed to this category."};
         }
 
         // Get the price of the category
@@ -40,7 +40,7 @@ export class SubscriptionService {
         const paymentResult = await this.paymentService.pay(amount, paymentInfo, paymentGateway);
 
         if (!paymentResult.success) {
-            return {status: 400, data: {error: "Payment failed", details: paymentResult.error}};
+            throw {status: 400, message: `Payment failed: ${paymentResult.error}`};
         }
 
         // Subscribe the user to the category
@@ -64,7 +64,7 @@ export class SubscriptionService {
 
         //check if user exists
         if (!user) {
-            return {status: 404, data: {error: "User not found"}};
+            throw {status: 404, message: "User not found"};
         }
 
         // map category ids

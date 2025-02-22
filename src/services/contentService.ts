@@ -38,7 +38,7 @@ export class WeeklyDigestService {
     async sendWeeklyDigest() {
         const users = await this.userRepo.getAllUsers()
         if (!users) {
-            return
+            throw {status: 401, message: "Unauthorized: User not found"}
         }
         for (const user of users) {
             const categoryIds: string[] = user.categories.map((category: Category) => category.id as string);
