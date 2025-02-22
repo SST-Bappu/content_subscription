@@ -9,7 +9,11 @@ import {SubscriptionService} from "@/services/subscriptionService";
 import {PaymentService} from "@/services/paymentService";
 import {SMTPEmail} from "@/strategies/emailStrategy/SMTPEmail";
 import {StripePayment} from "@/strategies/paymentStrategies/stripePayment";
-import {SubscriptionEmailBuilder, WelcomeEmailBuilder} from "@/strategies/emailBuilderStrategy/emailBuilder";
+import {
+    SubscriptionEmailBuilder,
+    WeeklyDigest,
+    WelcomeEmailBuilder
+} from "@/strategies/emailBuilderStrategy/emailBuilder";
 import {CategoryService} from "@/services/categoryService";
 import {ContentRepository} from "@/repositories/contentRepository";
 import {PrismaClient} from "@prisma/client";
@@ -35,11 +39,11 @@ const stripePaymentStrategy = new StripePayment()
 //email builder strategies
 const welcomeEmailBuilder = new WelcomeEmailBuilder()
 const subscriptionEmailBuilder = new SubscriptionEmailBuilder()
-
+const weeklyDigest = new WeeklyDigest()
 //strategy registries
 const paymentStrategyRegistry = new PaymentStrategyRegistry(stripePaymentStrategy)
 const emailStrategyRegistry = new EmailStrategyRegister(smtpStrategy)
-const emailBuilderRegistry = new EmailBuilderRegister(welcomeEmailBuilder, subscriptionEmailBuilder)
+const emailBuilderRegistry = new EmailBuilderRegister(welcomeEmailBuilder, subscriptionEmailBuilder, weeklyDigest)
 
 //services
 const emailService = new EmailService(emailStrategyRegistry, emailBuilderRegistry)

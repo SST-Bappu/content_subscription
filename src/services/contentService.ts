@@ -42,8 +42,7 @@ export class WeeklyDigestService {
         }
         for (const user of users) {
             const categoryIds: string[] = user.categories.map((category: Category) => category.id as string);
-
-            const contents = this.contentRepo.getLastWeekContentByCategories(categoryIds)
+            const contents = await this.contentRepo.getLastWeekContentByCategories(categoryIds)
             const emailData = {
                 email: user.email,
                 name: user.name,
