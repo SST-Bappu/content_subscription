@@ -79,13 +79,13 @@ src/
 To manually trigger the **content fetching** cron job:
 
 ```sh
-npx ts-node src/cron/fetchContent.ts
+NODE_OPTIONS='-r tsconfig-paths/register' npx ts-node src/cron/fetchContent.ts
 ```
 
 To manually trigger the **weekly digest email** cron job:
 
 ```sh
-npx ts-node src/cron/sendWeeklyDigest.ts
+NODE_OPTIONS='-r tsconfig-paths/register' npx ts-node src/cron/sendWeeklyDigest.ts
 ```
 
 
