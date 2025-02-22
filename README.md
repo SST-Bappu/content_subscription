@@ -40,13 +40,14 @@ Ensure you have the following installed:
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo.git
+   git clone https://github.com/your-repo.git content_subscription
+   cd content_subscription
    ```
 2. Install dependencies:
    ```sh
    npm install
    ```
-3. Configure environment variables:
+3. Configure environment variables (use test.env as a template):
 4. Run database migrations:
    ```sh
    npx prisma migrate dev
@@ -70,7 +71,7 @@ src/
 │── strategies/      # Strategy pattern implementation (Payment & Email)
 │── styles/          # Frontend styles (if applicable)
 │── utils/           # Utility functions
-│── .env             # Environment variables
+│── test.env             # Environment variables
 ```
 
 ## Running Cron Jobs
