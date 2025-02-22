@@ -1,14 +1,16 @@
 import { PrismaClient, Category } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 export class CategoryRepository {
+
+    constructor(private prisma: PrismaClient) {
+    }
     /**
      * Get all categories.
      * @returns A list of categories.
      */
     async getAllCategories(): Promise<Category[]> {
-        return prisma.category.findMany();
+        return this.prisma.category.findMany();
     }
 
     /**
@@ -17,6 +19,6 @@ export class CategoryRepository {
      * @returns The category object or null if not found.
      */
     async getCategoryById(id: string): Promise<Category | null> {
-        return prisma.category.findUnique({where: {id}});
+        return this.prisma.category.findUnique({where: {id}});
     }
 }

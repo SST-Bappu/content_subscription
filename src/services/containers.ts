@@ -12,15 +12,19 @@ import {StripePayment} from "@/strategies/paymentStrategies/stripePayment";
 import {SubscriptionEmailBuilder, WelcomeEmailBuilder} from "@/strategies/emailBuilderStrategy/emailBuilder";
 import {CategoryService} from "@/services/categoryService";
 import {ContentRepository} from "@/repositories/contentRepository";
+import {PrismaClient} from "@prisma/client";
 // We keep a centralized container as the project size is small
 // with limited services. We may upgrade to modularized containers for bigger projects
 
 
+//clients
+const prisma = new PrismaClient()
+
 //repositories
 
-const userRepository = new UserRepository()
-const categoryRepository = new CategoryRepository()
-const contentRepository = new ContentRepository()
+const userRepository = new UserRepository(prisma)
+const categoryRepository = new CategoryRepository(prisma)
+const contentRepository = new ContentRepository(prisma)
 
 //email strategies
 const smtpStrategy = new SMTPEmail()
