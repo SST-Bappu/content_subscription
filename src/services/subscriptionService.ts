@@ -3,11 +3,15 @@ import {UserRepository} from '@/repositories/userRepository';
 import {PaymentService} from '@/services/paymentService';
 import {Decimal} from "@prisma/client/runtime/binary";
 import {EmailService} from "@/services/emailService";
+import {Category} from "@prisma/client";
+import {ContentRepository} from "@/repositories/contentRepository";
+import {string} from "zod";
 
 export class SubscriptionService {
     constructor(
         private categoryRepo: CategoryRepository,
         private userRepo: UserRepository,
+        private contentRepo: ContentRepository,
         private paymentService: PaymentService,
         private emailService: EmailService
     ) {
@@ -53,5 +57,21 @@ export class SubscriptionService {
         await this.emailService.sendEmail(emailData, 'subscription')
 
         return {status: 200, data: {message: "Subscription successful", category: category.name}};
+    }
+
+    async getSubscribedContent(userId: string): Promise<{ status: number; data: object[] | object }> {
+        const user = await this.userRepo.getUserByIdWithCategories(userId)
+
+        //check if user exists
+        if (!user) {
+            return {status: 404, data: {error: "User not found"}};
+        }
+
+        // map category ids
+        const categoryIds: string[] = user.categories.map((category: Category) => category.id as string);
+        //fetch contents by category
+        const contents = await this.contentRepo.getContentsByCategories(categoryIds)
+
+        return {status: 200, data: contents}
     }
 }
