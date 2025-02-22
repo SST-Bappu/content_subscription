@@ -4,6 +4,7 @@ import { generateJWT } from '@/utils/jwt';
 import { RegisterUserInput, LoginUserInput, AuthResponse } from '@/interfaces/auth.interface';
 import {EmailService} from "@/services/emailService";
 
+
 export class AuthService {
     constructor(
         private userRepo: UserRepository,
@@ -14,7 +15,7 @@ export class AuthService {
 
         const existingUser = await this.userRepo.getUserByEmail(email);
         if (existingUser) {
-            return { status: 409, data: { error: "User already exists" } };
+            throw { status: 409, data: { error: "User already exists" } };
         }
 
         const hashedPassword = await hashPassword(password);
@@ -39,12 +40,12 @@ export class AuthService {
 
         const user = await this.userRepo.getUserByEmail(email);
         if (!user) {
-            return { status: 401, data: { error: "Invalid credentials" } };
+            throw { status: 401, message: "Invalid credentials" };
         }
 
         const isValidPassword = await comparePassword(password, user.password);
         if (!isValidPassword) {
-            return { status: 401, data: { error: "Invalid credentials" } };
+            throw { status: 401, message: "Invalid credentials" };
         }
 
         const token = generateJWT({ userId: user.id });

@@ -11,6 +11,6 @@ export function verifyJWT(token: string): JwtPayload | string | null {
         return jwt.verify(token, SECRET);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-        return null;
+        throw error
     }
 }
