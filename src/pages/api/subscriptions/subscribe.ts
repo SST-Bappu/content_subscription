@@ -28,7 +28,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
     // Process Subscription
     const {status, data} = await subscriptionService.subscribe(userId, categoryId, paymentInfo, paymentGateway);
-    return res.status(status).json(data);
+    return res.status(status).json({success: true, data: data});
 
 
 }
