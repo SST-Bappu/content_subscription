@@ -1,4 +1,5 @@
 import {PrismaClient, User} from '@prisma/client';
+import {UserWithCategories} from "@/interfaces/user.interface";
 
 const prisma = new PrismaClient();
 
@@ -28,6 +29,15 @@ export class UserRepository {
      */
     async getUserById(id: string): Promise<User | null> {
         return prisma.user.findUnique({where: {id}});
+    }
+
+    /**
+     * Find a user by ID with categories object.
+     * @param id - The user's unique ID.
+     * @returns The user object with categories or null if not found.
+     */
+    async getUserByIdWithCategories(id: string): Promise<UserWithCategories | null> {
+        return prisma.user.findUnique({where: {id}, include: {categories: true}});
     }
 
     /**
