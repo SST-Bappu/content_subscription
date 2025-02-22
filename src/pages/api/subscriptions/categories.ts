@@ -12,7 +12,7 @@ export default async function handler(req: AuthenticatedRequest, res: NextApiRes
         authenticate(req, res, async () => {
 
             const {status, data} = await categoryService.getAllCategories();
-            return res.status(status).json(data);
+            return res.status(status).json({success: true, data: data});
         });
     } catch (error: unknown) {
         console.error("Error fetching categories:", error);

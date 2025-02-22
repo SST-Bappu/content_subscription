@@ -11,6 +11,6 @@ export class CategoryService {
     async getAllCategories() {
         const categories = await this.categoryRep.getAllCategories();
 
-        return {status: 200, data: {categories}}
+        return {status: 200, data:categories}
     }
 }
