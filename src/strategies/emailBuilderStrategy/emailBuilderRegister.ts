@@ -1,13 +1,18 @@
 import {EmailBuilder} from "@/strategies/interfaces/emailBuilder.strategy";
-import {SubscriptionEmailBuilder, WelcomeEmailBuilder} from "@/strategies/emailBuilderStrategy/emailBuilder";
+import {
+    SubscriptionEmailBuilder,
+    WeeklyDigest,
+    WelcomeEmailBuilder
+} from "@/strategies/emailBuilderStrategy/emailBuilder";
 
 export class EmailBuilderRegister {
     private emailBuilderStrategies: Record<string, EmailBuilder>;
 
-    constructor(welcomeEmailBuilder: WelcomeEmailBuilder, subscriptionEmailBuilder: SubscriptionEmailBuilder) {
+    constructor(welcomeEmailBuilder: WelcomeEmailBuilder, subscriptionEmailBuilder: SubscriptionEmailBuilder, weeklyDigest: WeeklyDigest) {
         this.emailBuilderStrategies = {
             welcome: welcomeEmailBuilder,
-            subscription: subscriptionEmailBuilder
+            subscription: subscriptionEmailBuilder,
+            digest: weeklyDigest
         };
     }
 
@@ -15,6 +20,6 @@ export class EmailBuilderRegister {
      * Returns the appropriate email builder strategy.
      */
     getEmailBuilderStrategy(emailType: string): EmailBuilder {
-        return this.emailBuilderStrategies[emailType.toLowerCase()]; // Default to SMTP
+        return this.emailBuilderStrategies[emailType.toLowerCase()];
     }
 }
