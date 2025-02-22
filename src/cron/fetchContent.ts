@@ -1,10 +1,12 @@
-import {ContentRepository} from "../repositories/contentRepository";
-import {CategoryRepository} from "../repositories/categoryRepository";
-import {ContentService} from "../services/contentService";
+import {ContentRepository} from "@/repositories/contentRepository";
+import {CategoryRepository} from "@/repositories/categoryRepository";
+import {ContentService} from "@/services/contentService";
+import {PrismaClient} from "@prisma/client";
 
 async function storeContentCronJob() {
-    const contentRepo = new ContentRepository()
-    const categoryRepo = new CategoryRepository()
+    const prisma = new PrismaClient()
+    const contentRepo = new ContentRepository(prisma)
+    const categoryRepo = new CategoryRepository(prisma)
 
     const contentService = new ContentService(contentRepo, categoryRepo)
     console.log('Fetching contents from dummy json.......')
