@@ -2,25 +2,19 @@ import {NextApiResponse} from 'next';
 import {authenticate} from '@/middleware/authMiddleware';
 import {AuthenticatedRequest} from "@/interfaces/auth.interface";
 import {categoryService} from "@/services/containers";
+import {errorHandler} from "@/middleware/errorHandlingMiddleware";
 
-export default async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
+async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
-        return res.status(405).json({error: "Method not allowed"});
+        throw {status: 405, message: "Method not allowed"};
     }
 
-    try {
-        authenticate(req, res, async () => {
+    authenticate(req, res, async () => {
 
-            const {status, data} = await categoryService.getAllCategories();
-            return res.status(status).json({success: true, data: data});
-        });
-    } catch (error: unknown) {
-        console.error("Error fetching categories:", error);
+        const {status, data} = await categoryService.getAllCategories();
+        return res.status(status).json({success: true, data: data});
+    });
 
-        if (error instanceof Error) {
-            return res.status(500).json({error: `Internal Server Error: ${error.message}`});
-        }
-
-        return res.status(500).json({error: "Internal Server Error"});
-    }
 }
+
+export default errorHandler(handler)
