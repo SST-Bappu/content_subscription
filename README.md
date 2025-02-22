@@ -1,40 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Content Subscription App
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This is a **Next.js API** designed for content subscription. The system allows users to subscribe to categories and receive weekly digest emails with recommended content. It also integrates with external APIs to fetch content daily and store it in the database.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- **User Subscription**: Users can subscribe to different content categories.
+- **Content Fetching**: A cron job fetches content daily from an external API (DummyJSON) and stores it.
+- **Weekly Digest**: An automated email system sends a weekly digest of content to subscribed users.
+- **Payment Integration**: Stripe integration for handling subscription payments.
+- **Email Notifications**: Uses **Nodemailer** with SMTP for email notifications.
+- **Validation**: Zod is used for request payload validation.
+- **Database**: Prisma ORM with PostgreSQL.
+- **Singleton Architecture**: All services, repositories, and clients are managed via a container to ensure singleton behavior.
+
+## Technologies Used
+
+- **Next.js** - React framework for building APIs and SSR applications.
+- **Prisma ORM** - Database management and migrations.
+- **PostgreSQL** - Relational database.
+- **Zod** - Request payload validation.
+- **Nodemailer** - SMTP email service.
+- **Stripe** - Payment gateway integration.
+- **Crontab** - Scheduling tasks for content fetching and email notifications.
+- **SOLID Principles** - Ensuring clean and maintainable code.
+
+## Installation
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- **Node.js** (v18+)
+- **PostgreSQL** (Latest version)
+- **Docker** (Optional for running PostgreSQL in a container)
+
+### Steps to Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo.git
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Configure environment variables:
+4. Run database migrations:
+   ```sh
+   npx prisma migrate dev
+   ```
+5. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+## Project Structure
+
+```
+src/
+│── cron/            # Scheduled tasks (content fetching, digest emails)
+│── dtos/            # Data Transfer Objects for request validation
+│── interfaces/      # Interfaces for types and structure
+│── middleware/      # Middleware functions
+│── pages/api/       # Next.js API endpoints
+│── repositories/    # Database interaction (Prisma repositories)
+│── services/        # Business logic and service layer
+│── strategies/      # Strategy pattern implementation (Payment & Email)
+│── styles/          # Frontend styles (if applicable)
+│── utils/           # Utility functions
+│── .env             # Environment variables
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running Cron Jobs
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+To manually trigger the **content fetching** cron job:
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```sh
+npx ts-node src/cron/fetchContent.ts
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+To manually trigger the **weekly digest email** cron job:
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+npx ts-node src/cron/sendWeeklyDigest.ts
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## Error Handling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Global Error Middleware**: Next.js API routes include error-handling middleware to catch common issues.
+- **Unhandled Rejections & Exceptions**: Wrapped in `try-catch` blocks in async functions where necessary.
+- **Custom API Error Responses**: Uses a standardized response format `{ success: false, message: 'Error details' }`.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
