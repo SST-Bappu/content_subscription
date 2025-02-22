@@ -2,10 +2,10 @@ import {PrismaClient, User} from '@prisma/client';
 import {UserWithCategories} from "@/interfaces/user.interface";
 
 
-
 export class UserRepository {
     constructor(private prisma: PrismaClient) {
     }
+
     /**
      * Find a user by email.
      * @param email - The user's email.
@@ -40,6 +40,21 @@ export class UserRepository {
      */
     async getUserByIdWithCategories(id: string): Promise<UserWithCategories | null> {
         return this.prisma.user.findUnique({where: {id}, include: {categories: true}});
+    }
+
+    /**
+     * Find all users  with categories object.
+     * @returns The user object with categories or null if not found.
+     */
+    async getAllUsers(): Promise<UserWithCategories[] | null> {
+        return this.prisma.user.findMany({
+            where: {
+                categories: {
+                    some: {} // Ensures the user has at least one category
+                }
+            },
+            include: {categories: true}
+        })
     }
 
     /**
